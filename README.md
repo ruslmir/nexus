@@ -11,7 +11,7 @@
 ```
 feature vpc   
 feature lacp
-!
+
 interface mgmt0 
  ip address 10.0.0.1/30
  no shut 
