@@ -111,3 +111,50 @@ interface port-channel 10
  switchport trunk allowed vlan 10
  vpc 4096  
 ```
+Далее простая настройка eigrp. Насколько помню в последних nx-os удалили команду network и надо с интерфейсов включать eigrp. Для анонса сделать Loopback0
+N9k1
+```
+feature eigrp
+router eigrp 10
+
+interface Vlan10
+  ip router eigrp 10
+
+interface loopback0
+  ip address 1.1.1.1/32
+  ip router eigrp 10
+
+N9k1# sh ip route eigrp-10
+IP Route Table for VRF "default"
+'*' denotes best ucast next-hop
+'**' denotes best mcast next-hop
+'[x/y]' denotes [preference/metric]
+'%<string>' in via output denotes VRF <string>
+
+2.2.2.2/32, ubest/mbest: 1/0
+    *via 192.168.10.253, Vlan10, [90/130816], 00:35:20, eigrp-10, internal
+
+PING 2.2.2.2 (2.2.2.2) from 1.1.1.1: 56 data bytes
+64 bytes from 2.2.2.2: icmp_seq=0 ttl=254 time=7.636 ms
+64 bytes from 2.2.2.2: icmp_seq=1 ttl=254 time=7.016 ms
+64 bytes from 2.2.2.2: icmp_seq=2 ttl=254 time=6.507 ms
+64 bytes from 2.2.2.2: icmp_seq=3 ttl=254 time=6.668 ms
+64 bytes from 2.2.2.2: icmp_seq=4 ttl=254 time=6.184 ms
+
+--- 2.2.2.2 ping statistics ---
+5 packets transmitted, 5 packets received, 0.00% packet loss
+round-trip min/avg/max = 6.184/6.802/7.636 ms
+```
+
+Для N9k2
+```
+feature eigrp
+
+router eigrp 10
+
+interface Vlan10
+  ip router eigrp 10
+
+interface loopback0
+  ip router eigrp 10
+```
